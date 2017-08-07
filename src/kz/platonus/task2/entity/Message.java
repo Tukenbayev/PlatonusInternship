@@ -1,4 +1,4 @@
-package kz.platonus.task2.pojo;
+package kz.platonus.task2.entity;
 
 public class Message implements Comparable<Message> {
 

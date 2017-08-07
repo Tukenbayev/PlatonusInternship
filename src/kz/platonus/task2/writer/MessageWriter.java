@@ -1,6 +1,6 @@
 package kz.platonus.task2.writer;
 
-import kz.platonus.task2.pojo.Message;
+import kz.platonus.task2.entity.Message;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

@@ -1,6 +1,6 @@
 package kz.platonus.task2.reader;
 
-import kz.platonus.task2.pojo.Message;
+import kz.platonus.task2.entity.Message;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

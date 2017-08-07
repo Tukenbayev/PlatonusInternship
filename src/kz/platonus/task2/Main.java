@@ -1,6 +1,6 @@
 package kz.platonus.task2;
 
-import kz.platonus.task2.pojo.Message;
+import kz.platonus.task2.entity.Message;
 import kz.platonus.task2.reader.MessageReader;
 import kz.platonus.task2.writer.MessageWriter;
 
