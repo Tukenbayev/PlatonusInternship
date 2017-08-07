@@ -1,11 +1,11 @@
 package kz.platonus.task2;
 
-import kz.platonus.task2.reader.FileReader;
-import kz.platonus.task2.writer.FileWriter;
+import kz.platonus.task2.pojo.Message;
+import kz.platonus.task2.reader.MessageReader;
+import kz.platonus.task2.writer.MessageWriter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 
 public class Main {
@@ -16,8 +16,11 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        Map<Integer,List<String>> messages = FileReader.readFile(INPUT_FILE_NAME);
-        FileWriter.sortAndWriteToFile(messages,OUTPUT_FILE_NAME,CHARSET);
+        MessageReader messageReader = new MessageReader();
+        List<Message> messages = messageReader.readFile(INPUT_FILE_NAME);
+
+        MessageWriter messageWriter = new MessageWriter();
+        messageWriter.sortAndWriteToFile(messages,OUTPUT_FILE_NAME,CHARSET);
 
     }
 }

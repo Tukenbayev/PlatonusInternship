@@ -1,40 +1,43 @@
 package kz.platonus.task2.reader;
 
+import kz.platonus.task2.pojo.Message;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class FileReader {
+public class MessageReader {
 
-    public static Map<Integer,List<String>> readFile(String fileName) throws IOException {
+
+
+    public List<Message> readFile(String fileName) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("D:/messages.txt"),
                 "UTF-16"));
-        Map<Integer,List<String>> messages = new TreeMap<>();
+        List<Message> messages = new ArrayList<>();
 
         while (reader.ready()){
             String line = reader.readLine();
             char[] chars = line.toCharArray();
             StringBuilder id = new StringBuilder();
-            StringBuilder message = new StringBuilder();
+            StringBuilder content = new StringBuilder();
             for (char c : chars){
                 if (c == '|'){
-                    message.append(chars);
+                    content.append(chars);
                     break;
                 }
                 id.append(c);
             }
 
-            put(messages,Integer.valueOf(id.toString()),message.toString());
+            Message message = new Message(Integer.valueOf(id.toString()), content.toString());
+            messages.add(message);
         }
+
         return messages;
     }
 
-    private static void put(Map<Integer,List<String>> messages,int id,String message){
-        messages.putIfAbsent(id, new ArrayList<>());
-        messages.get(id).add(message);
-    }
+
 
 }
