@@ -1,0 +1,13 @@
+package kz.platonus.task3.enumeration;
+
+public enum FieldType {
+
+    //Numeric types
+    BIT,TINYINT,BOOLEAN,SMALLINT,MEDIUMINT,INT,BIGINT,DECIMAL,FLOAT,DOUBLE,
+
+    //Date and Time types
+    DATE,DATETIME,TIME,YEAR,
+
+    //String types
+    CHAR,VARCHAR,BINARY,VARBINARY,TINYBLOB,BLOB,MEDIUMBLOB,LONGBLOB,TINYTEXT,TEXT,MEDIUMTEXT,LONGTEXT,ENUM,SET
+}
