@@ -17,7 +17,7 @@
     </dependencies>
 
     <build>
-        <finalName>KesteApp</finalName>
+        <finalName>Task1</finalName>
         <plugins>
 
             <plugin>

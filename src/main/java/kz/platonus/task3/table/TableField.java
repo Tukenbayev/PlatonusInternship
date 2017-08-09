@@ -2,6 +2,8 @@ package kz.platonus.task3.table;
 
 import kz.platonus.task3.enumeration.FieldType;
 
+
+
 public class TableField {
 
     private String fieldName;
@@ -11,6 +13,7 @@ public class TableField {
     private ForeignKey foreignKey;
     private boolean notNull;
     private boolean autoIncrement;
+
 
     public TableField fieldName(String fieldName){
         this.fieldName = fieldName;
@@ -45,5 +48,46 @@ public class TableField {
     public TableField autoIncrement(boolean autoIncrement){
         this.autoIncrement = autoIncrement;
         return this;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public FieldType getFieldType() {
+        return fieldType;
+    }
+
+    public int getFieldLength() {
+        return fieldLength;
+    }
+
+    public boolean isPrimaryKey() {
+        return primaryKey;
+    }
+
+    public ForeignKey getForeignKey() {
+        return foreignKey;
+    }
+
+    public boolean isNotNull() {
+        return notNull;
+    }
+
+    public boolean isAutoIncrement() {
+        return autoIncrement;
+    }
+
+    @Override
+    public String toString() {
+        return "TableField{" +
+                "fieldName='" + fieldName + '\'' +
+                ", fieldType=" + fieldType +
+                ", fieldLength=" + fieldLength +
+                ", primaryKey=" + primaryKey +
+                ", foreignKey=" + foreignKey +
+                ", notNull=" + notNull +
+                ", autoIncrement=" + autoIncrement +
+                '}';
     }
 }

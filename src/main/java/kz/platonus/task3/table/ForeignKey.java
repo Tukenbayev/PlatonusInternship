@@ -9,4 +9,12 @@ public class ForeignKey {
         this.referenceTableName = referenceTableName;
         this.columnName = columnName;
     }
+
+    public String getReferenceTableName() {
+        return referenceTableName;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
 }

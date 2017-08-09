@@ -9,8 +9,6 @@ import java.util.List;
 public interface TableService {
 
     void createTable(String tableName, String comment, List<TableField> fields);
-    void alterTable();
-    void dropTable();
     void addColumn(TableField tableField);
     void dropColumn(String columnName);
     void changeColumnType(String columnName, FieldType type);

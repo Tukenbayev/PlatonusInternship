@@ -42,7 +42,35 @@ public class Table {
         return comment;
     }
 
+    public TableField getFieldByName(String fieldName){
+
+        for (TableField field : tableFields){
+            if (field.getFieldName().equals(fieldName))
+                return field;
+        }
+        return null;
+    }
+
+    public boolean hasForeignKey(){
+        for (TableField field : tableFields){
+            if (field.getForeignKey() != null)
+                return true;
+        }
+        return false;
+    }
+
+
     public List<TableField> getTableFields() {
         return tableFields;
+    }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "tableName='" + tableName + '\'' +
+                ", comment='" + comment + '\'' +
+                ", tableFields=" + tableFields +
+                ", tableService=" + tableService +
+                '}';
     }
 }
