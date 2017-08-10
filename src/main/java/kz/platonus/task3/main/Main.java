@@ -1,13 +1,11 @@
 package kz.platonus.task3.main;
 
-import kz.platonus.task3.database.MySQLDatabaseImpl;
 import kz.platonus.task3.enumeration.FieldType;
 import kz.platonus.task3.table.ForeignKey;
 import kz.platonus.task3.table.Table;
 import kz.platonus.task3.table.TableGenerator;
 import kz.platonus.task3.table.TableField;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,9 +55,13 @@ public class Main {
                 .foreignKey(new ForeignKey("students","StudentID")));
         studentTransactions.addField(new TableField()
                 .fieldName("PostDate")
-                .fieldType(FieldType.DATETIME));
+                .fieldType(FieldType.YEAR));
         studentTransactions.addField(new TableField()
                 .fieldName("Description")
+                .fieldType(FieldType.CHAR)
+                .fieldLength(100));
+        studentTransactions.addField(new TableField()
+                .fieldName("subscription")
                 .fieldType(FieldType.CHAR)
                 .fieldLength(100));
         tables.add(studentTransactions);

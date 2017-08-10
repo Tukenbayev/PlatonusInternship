@@ -21,24 +21,20 @@ public class TableGenerator {
     }
 
     private void sortInCreationOrder(Table table){
-        if (!table.hasForeignKey() && !sortedTables.contains(table)){
-            sortedTables.add(table);
-        }else if (!sortedTables.contains(table)){
-            for (TableField tableField : table.getTableFields()) {
-                if (tableField.getForeignKey() != null) {
-                    String referenceTableName = tableField.getForeignKey().getReferenceTableName();
-                    Table referenceTable = getTableByName(referenceTableName);
-                    if (referenceTable != null)
-                        sortInCreationOrder(referenceTable);
-                }
+        if (sortedTables.contains(table)) return;
+
+        for (TableField tableField : table.getTableFields()) {
+            if (tableField.getForeignKey() != null) {
+                Table referenceTable = getReferenceTable(tableField);
+                sortInCreationOrder(referenceTable);
             }
         }
 
-        if (!sortedTables.contains(table))
-            sortedTables.add(table);
+        sortedTables.add(table);
     }
 
-    private Table getTableByName(String tableName){
+    private Table getReferenceTable(TableField tableField){
+        String tableName = tableField.getForeignKey().getReferenceTableName();
         for (Table table : tables){
             if (table.getTableName().equals(tableName))
                 return table;
