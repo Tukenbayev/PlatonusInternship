@@ -30,8 +30,8 @@ public class TableField {
         return this;
     }
 
-    public TableField primaryKey(boolean primaryKey){
-        this.primaryKey = primaryKey;
+    public TableField primaryKey(){
+        this.primaryKey = true;
         return this;
     }
 
@@ -40,13 +40,13 @@ public class TableField {
         return this;
     }
 
-    public TableField notNull(boolean notNull){
-        this.notNull = notNull;
+    public TableField notNull(){
+        this.notNull = true;
         return this;
     }
 
-    public TableField autoIncrement(boolean autoIncrement){
-        this.autoIncrement = autoIncrement;
+    public TableField autoIncrement(){
+        this.autoIncrement = true;
         return this;
     }
 

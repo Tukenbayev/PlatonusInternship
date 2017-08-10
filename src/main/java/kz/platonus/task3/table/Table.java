@@ -1,6 +1,5 @@
 package kz.platonus.task3.table;
 
-import kz.platonus.task3.enumeration.FieldType;
 import kz.platonus.task3.service.TableService;
 import kz.platonus.task3.service.TableServiceImpl;
 
@@ -15,10 +14,8 @@ public class Table {
     private TableService tableService;
 
     public Table(String tableName, String comment) {
-        this.tableName = tableName;
+        this(tableName);
         this.comment = comment;
-        tableFields = new ArrayList<>();
-        tableService = new TableServiceImpl();
     }
 
     public Table(String tableName){
@@ -31,14 +28,8 @@ public class Table {
         tableFields.add(field);
     }
 
-    public void addNewColumn(TableField field){tableService.addColumn(tableName,field);}
-
-    public void dropColumn(String columnName){tableService.dropColumn(tableName,columnName);}
-
-    public void changeColumnType(String columnName, FieldType type){tableService.changeColumnType(tableName,columnName,type);}
-
-    public void createTable(){
-        tableService.createTable(tableName,comment,tableFields);
+    public void generateTable(){
+        tableService.generateTable(this);
     }
 
     public String getTableName() {

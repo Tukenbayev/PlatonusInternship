@@ -3,30 +3,32 @@ package kz.platonus.task3.service;
 import kz.platonus.task3.database.Database;
 import kz.platonus.task3.database.MySQLDatabaseImpl;
 import kz.platonus.task3.enumeration.FieldType;
+import kz.platonus.task3.table.Table;
 import kz.platonus.task3.table.TableField;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class TableServiceImpl implements TableService {
 
     private Database database = new MySQLDatabaseImpl();
+    private DatabaseMetaData metaData;
     private final String CREATE_TABLE_QUERY_PATTERN = "CREATE TABLE IF NOT EXISTS %s(%s) COMMENT=%s";
     private final String ADD_COLUMN_QUERY_PATTERN = "ALTER TABLE %s ADD %s";
-    private final String DROP_COLUMN_QUERY_PATTERN = "ALTER TABLE %s DROP COLUMN %s";
     private final String MODIFY_COLUMN_TYPE_QUERY_PATTERN = "ALTER TABLE %s MODIFY COLUMN %s %s";
 
     @Override
-    public void createTable(String tableName, String comment, List<TableField> fields){
+    public void generateTable(Table table){
 
-        try(Connection conn = database.getConnection()) {
-            Statement stmt = conn.createStatement();
-            stmt.execute(buildCreateTableQuery(tableName,comment,fields));
-            System.out.println(buildCreateTableQuery(tableName,comment,fields));
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (isExists(table)){
+            alterTable(table);
+        }else {
+            try (Connection conn = database.getConnection()) {
+                Statement stmt = conn.createStatement();
+                stmt.execute(buildCreateTableQuery(table.getTableName(), table.getComment(), table.getTableFields()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -35,10 +37,11 @@ public class TableServiceImpl implements TableService {
         for (TableField field : fields){
             tableColumns.append(field.getFieldName() + " ").append(field.getFieldType());
 
-            if (field.getFieldLength() != 0)
-                tableColumns.append("("+field.getFieldLength()+") ");
-            else
-                tableColumns.append(" ");
+            if (field.getFieldLength() != 0){
+                tableColumns.append("("+field.getFieldLength()+")");
+            }
+            tableColumns.append(" ");
+
             if (field.isPrimaryKey())
                 tableColumns.append("PRIMARY KEY ");
             if (field.isNotNull())
@@ -57,12 +60,39 @@ public class TableServiceImpl implements TableService {
         return String.format(CREATE_TABLE_QUERY_PATTERN,tableName,tableColumns.toString(),"\""+comment+"\"");
     }
 
+    private boolean isExists(Table table){
+        try(Connection connection = database.getConnection()){
+            metaData = connection.getMetaData();
+            ResultSet resultSet = metaData.getTables(null,null,table.getTableName(),null);
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-    @Override
-    public void addColumn(String tableName, TableField tableField) {
+    private void alterTable(Table table){
+        try{
+            for (TableField field : table.getTableFields()){
+                ResultSet resultSet = metaData.getColumns(null,null,table.getTableName(),field.getFieldName());
+                if (resultSet.next()){
+                    String currentFieldType = resultSet.getString("TYPE_NAME");
+                    if (!currentFieldType.equals(field.getFieldType().toString())){
+                        changeColumnType(table,field);
+                    }
+                }else{
+                    addColumn(table.getTableName(),field);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void addColumn(String tableName, TableField tableField) {
         try(Connection conn = database.getConnection();
             Statement addColumnStmt = conn.createStatement()) {
-
             addColumnStmt.execute(buildAddColumnQuery(tableName,tableField));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,25 +116,22 @@ public class TableServiceImpl implements TableService {
         return String.format(ADD_COLUMN_QUERY_PATTERN,tableName,tableColumn.toString());
     }
 
-    @Override
-    public void dropColumn(String tableName,String columnName) {
+    private void changeColumnType(Table table, TableField field){
         try(Connection conn = database.getConnection();
-            Statement dropColumnStmt = conn.createStatement()) {
-
-            dropColumnStmt.execute(String.format(DROP_COLUMN_QUERY_PATTERN,tableName,columnName));
+            Statement modifyColumnStmt = conn.createStatement()){
+//            if (field.isPrimaryKey()) {
+//                ResultSet exportedKeys = metaData.getExportedKeys(null,null,table.getTableName());
+//                while (exportedKeys.next()){
+//                    String foreignTableName = exportedKeys.getString("FKTABLE_NAME");
+//                    String foreingColumnName = exportedKeys.getString("FKCOLUMN_NAME");
+//                    buildChangeColumnTypeQuery(foreignTableName,foreingColumnName,field.getFieldType());
+//                }
+//            }
+            modifyColumnStmt.execute(String.format(MODIFY_COLUMN_TYPE_QUERY_PATTERN,table.getTableName(),
+                    field.getFieldName(),field.getFieldType().toString()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void changeColumnType(String tableName,String columnName, FieldType newType) {
-        try(Connection conn = database.getConnection();
-            Statement modifyColumnStmt = conn.createStatement()) {
-
-            modifyColumnStmt.execute(String.format(MODIFY_COLUMN_TYPE_QUERY_PATTERN,tableName,columnName,newType));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

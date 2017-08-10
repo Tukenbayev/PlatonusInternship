@@ -1,11 +1,13 @@
 package kz.platonus.task3.main;
 
+import kz.platonus.task3.database.MySQLDatabaseImpl;
 import kz.platonus.task3.enumeration.FieldType;
 import kz.platonus.task3.table.ForeignKey;
 import kz.platonus.task3.table.Table;
-import kz.platonus.task3.table.TableBuilder;
+import kz.platonus.task3.table.TableGenerator;
 import kz.platonus.task3.table.TableField;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,21 +20,25 @@ public class Main {
         students.addField(new TableField()
                     .fieldName("StudentID")
                     .fieldType(FieldType.INT)
-                    .autoIncrement(true)
-                    .notNull(true)
-                    .primaryKey(true));
+                    .autoIncrement()
+                    .notNull()
+                    .primaryKey());
         students.addField(new TableField()
                 .fieldName("FirstName")
                 .fieldType(FieldType.CHAR)
                 .fieldLength(30)
-                .notNull(true));
+                .notNull());
         students.addField(new TableField()
                 .fieldName("LastName")
                 .fieldType(FieldType.CHAR)
-                .notNull(true)
+                .notNull()
                 .fieldLength(30));
         students.addField(new TableField()
                 .fieldName("email")
+                .fieldType(FieldType.CHAR)
+                .fieldLength(50));
+        students.addField(new TableField()
+                .fieldName("address")
                 .fieldType(FieldType.CHAR)
                 .fieldLength(50));
         tables.add(students);
@@ -41,17 +47,17 @@ public class Main {
         studentTransactions.addField(new TableField()
                     .fieldName("TransactionID")
                     .fieldType(FieldType.INT)
-                    .autoIncrement(true)
-                    .notNull(true)
-                    .primaryKey(true));
+                    .autoIncrement()
+                    .notNull()
+                    .primaryKey());
         studentTransactions.addField(new TableField()
                 .fieldName("StudentID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("students","StudentID")));
         studentTransactions.addField(new TableField()
                 .fieldName("PostDate")
-                .fieldType(FieldType.DATE));
+                .fieldType(FieldType.DATETIME));
         studentTransactions.addField(new TableField()
                 .fieldName("Description")
                 .fieldType(FieldType.CHAR)
@@ -62,26 +68,26 @@ public class Main {
         grades.addField(new TableField()
                 .fieldName("StudentID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("students","StudentID")));
         grades.addField(new TableField()
                 .fieldName("CourseID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("courses","CourseID")));
         grades.addField(new TableField()
                 .fieldName("Year")
                 .fieldType(FieldType.YEAR)
-                .notNull(true));
+                .notNull());
         grades.addField(new TableField()
                 .fieldName("Semester")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .fieldLength(2));
         grades.addField(new TableField()
                 .fieldName("Grade")
                 .fieldType(FieldType.CHAR)
-                .notNull(true)
+                .notNull()
                 .fieldLength(10));
         tables.add(grades);
 
@@ -89,36 +95,36 @@ public class Main {
         courses.addField(new TableField()
                 .fieldName("CourseID")
                 .fieldType(FieldType.INT)
-                .autoIncrement(true)
-                .notNull(true)
-                .primaryKey(true));
+                .autoIncrement()
+                .notNull()
+                .primaryKey());
         courses.addField(new TableField()
                 .fieldName("DepartmentID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("departments","DepartmentID")));
         courses.addField(new TableField()
                 .fieldName("Name")
                 .fieldType(FieldType.CHAR)
                 .fieldLength(30)
-                .notNull(true));
+                .notNull());
         tables.add(courses);
 
         Table enrollments = new Table("enrollments");
         enrollments.addField(new TableField()
                 .fieldName("CourseID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("courses","CourseID")));
         enrollments.addField(new TableField()
                 .fieldName("Section")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("sections","Section")));
         enrollments.addField(new TableField()
                 .fieldName("StudentID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("students","StudentID")));
         tables.add(enrollments);
 
@@ -126,31 +132,31 @@ public class Main {
         departments.addField(new TableField()
                 .fieldName("DepartmentID")
                 .fieldType(FieldType.INT)
-                .autoIncrement(true)
-                .notNull(true)
-                .primaryKey(true));
+                .autoIncrement()
+                .notNull()
+                .primaryKey());
         departments.addField(new TableField()
                 .fieldName("Description")
                 .fieldType(FieldType.CHAR)
                 .fieldLength(100)
-                .notNull(true));
+                .notNull());
         tables.add(departments);
 
         Table sections = new Table("sections","Description of section table");
         sections.addField(new TableField()
                 .fieldName("Section")
                 .fieldType(FieldType.INT)
-                .autoIncrement(true)
-                .primaryKey(true));
+                .autoIncrement()
+                .primaryKey());
         sections.addField(new TableField()
                 .fieldName("CourseID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("courses","CourseID")));
         sections.addField(new TableField()
                 .fieldName("ProfessorID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("employees","EmployeeID")));
         sections.addField(new TableField()
                 .fieldName("StartTime")
@@ -161,27 +167,30 @@ public class Main {
         employees.addField(new TableField()
                 .fieldName("EmployeeID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
-                .primaryKey(true)
-                .autoIncrement(true));
+                .notNull()
+                .primaryKey()
+                .autoIncrement());
         employees.addField(new TableField()
                 .fieldName("FirstName")
                 .fieldType(FieldType.CHAR)
-                .notNull(true)
+                .notNull()
                 .fieldLength(30));
         employees.addField(new TableField()
                 .fieldName("LastName")
                 .fieldType(FieldType.CHAR)
-                .notNull(true)
+                .notNull()
                 .fieldLength(30));
         employees.addField(new TableField()
                 .fieldName("DepartmentID")
                 .fieldType(FieldType.INT)
-                .notNull(true)
+                .notNull()
                 .foreignKey(new ForeignKey("departments", "DepartmentID")));
         tables.add(employees);
 
-        TableBuilder.createTables(tables);
+        TableGenerator tableGenerator = new TableGenerator(tables);
+        tableGenerator.generateTables();
+
+
 
 
     }

@@ -3,28 +3,33 @@ package kz.platonus.task3.table;
 
 import java.util.*;
 
-public class TableBuilder {
+public class TableGenerator {
 
-    private static final List<Table> sortedTables = new ArrayList<>();
+    private final List<Table> sortedTables = new ArrayList<>();
+    List<Table> tables;
 
-    public static void createTables(List<Table> tables){
-        for (Table table : tables)
-            sortInCreationOrder(table,tables);
-
-        for (Table table : sortedTables)
-            table.createTable();
+    public TableGenerator(List<Table> tables){
+        this.tables = tables;
     }
 
-    private static void sortInCreationOrder(Table table, List<Table> tables){
+    public void generateTables(){
+        for (Table table : tables)
+            sortInCreationOrder(table);
+
+        for (Table table : sortedTables)
+            table.generateTable();
+    }
+
+    private void sortInCreationOrder(Table table){
         if (!table.hasForeignKey() && !sortedTables.contains(table)){
             sortedTables.add(table);
         }else if (!sortedTables.contains(table)){
             for (TableField tableField : table.getTableFields()) {
                 if (tableField.getForeignKey() != null) {
                     String referenceTableName = tableField.getForeignKey().getReferenceTableName();
-                    Table referenceTable = getTableByName(referenceTableName, tables);
+                    Table referenceTable = getTableByName(referenceTableName);
                     if (referenceTable != null)
-                        sortInCreationOrder(referenceTable,tables);
+                        sortInCreationOrder(referenceTable);
                 }
             }
         }
@@ -33,7 +38,7 @@ public class TableBuilder {
             sortedTables.add(table);
     }
 
-    private static Table getTableByName(String tableName, List<Table> tables){
+    private Table getTableByName(String tableName){
         for (Table table : tables){
             if (table.getTableName().equals(tableName))
                 return table;
