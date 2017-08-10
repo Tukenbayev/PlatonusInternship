@@ -9,7 +9,7 @@ import java.util.List;
 public interface TableService {
 
     void createTable(String tableName, String comment, List<TableField> fields);
-    void addColumn(TableField tableField);
-    void dropColumn(String columnName);
-    void changeColumnType(String columnName, FieldType type);
+    void addColumn(String tableName, TableField tableField);
+    void dropColumn(String tableName,String columnName);
+    void changeColumnType(String tableName, String columnName, FieldType type);
 }

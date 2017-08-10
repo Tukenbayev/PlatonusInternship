@@ -78,16 +78,4 @@ public class TableField {
         return autoIncrement;
     }
 
-    @Override
-    public String toString() {
-        return "TableField{" +
-                "fieldName='" + fieldName + '\'' +
-                ", fieldType=" + fieldType +
-                ", fieldLength=" + fieldLength +
-                ", primaryKey=" + primaryKey +
-                ", foreignKey=" + foreignKey +
-                ", notNull=" + notNull +
-                ", autoIncrement=" + autoIncrement +
-                '}';
-    }
 }
