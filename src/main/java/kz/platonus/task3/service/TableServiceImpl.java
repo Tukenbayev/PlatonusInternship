@@ -119,14 +119,6 @@ public class TableServiceImpl implements TableService {
     private void changeColumnType(Table table, TableField field){
         try(Connection conn = database.getConnection();
             Statement modifyColumnStmt = conn.createStatement()){
-//            if (field.isPrimaryKey()) {
-//                ResultSet exportedKeys = metaData.getExportedKeys(null,null,table.getTableName());
-//                while (exportedKeys.next()){
-//                    String foreignTableName = exportedKeys.getString("FKTABLE_NAME");
-//                    String foreingColumnName = exportedKeys.getString("FKCOLUMN_NAME");
-//                    buildChangeColumnTypeQuery(foreignTableName,foreingColumnName,field.getFieldType());
-//                }
-//            }
             modifyColumnStmt.execute(String.format(MODIFY_COLUMN_TYPE_QUERY_PATTERN,table.getTableName(),
                     field.getFieldName(),field.getFieldType().toString()));
         } catch (SQLException e) {
